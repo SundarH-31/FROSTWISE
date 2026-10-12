@@ -5,8 +5,15 @@ from pathlib import Path
 from datetime import datetime
 
 ROOT=Path(__file__).parent
-LOGO=ROOT/"assets"/"frostwise_logo.png"
-FACILITY=ROOT/"assets"/"refrigeration_facility_ai_visual.png"
+ASSETS=ROOT/"assets"
+def asset_file(filename):
+    """Find an asset in assets/ first, then at repository root (GitHub browser uploads)."""
+    for candidate in (ASSETS/filename, ROOT/filename):
+        if candidate.exists():
+            return candidate
+    return None
+LOGO=asset_file("frostwise_logo.png")
+FACILITY=asset_file("refrigeration_facility_ai_visual.png")
 PRODUCTS=[
     ("Vegetable Cold Storage","vegetable_cold_storage.jpg"),("Meat Processing Cold Room","meat_processing_cold_room.jpg"),
     ("Dairy Processing Unit","dairy_processing_unit.jpg"),("Seafood Cold Storage","seafood_cold_storage.jpg"),
@@ -59,7 +66,7 @@ def demo_data():
     return pd.DataFrame({"timestamp":ts,"room_temperature_c":np.round(room,2),"setpoint_c":-18.0,"ambient_temperature_c":np.round(amb,2),"compressor_power_kw":np.round(np.maximum(power,.1),2)})
 
 with st.sidebar:
-    if LOGO.exists(): st.image(str(LOGO),use_container_width=True)
+    if LOGO: st.image(str(LOGO),use_container_width=True)
     st.markdown("### FROSTWISE")
     st.caption("Smart refrigeration intelligence")
     st.markdown('<span class="tag">PROTOTYPE ENVIRONMENT</span>',unsafe_allow_html=True)
@@ -72,7 +79,7 @@ st.markdown('<span class="tag">SMART REFRIGERATION INTELLIGENCE</span> &nbsp; <s
 # Brand header
 brand_left, brand_right = st.columns([1, 4])
 with brand_left:
-    if LOGO.exists(): st.image(str(LOGO), width=220)
+    if LOGO: st.image(str(LOGO), width=220)
 with brand_right:
     st.markdown("<div style='padding-top:22px;text-align:right;color:#1597d4;font-weight:800;letter-spacing:.12em'>SMART REFRIGERATION SOLUTIONS</div>",unsafe_allow_html=True)
 page=st.radio("Website navigation",["Home","Our Solution","Products & Applications","Our Team","Who Benefits","Ask FROSTWISE","Contact","Live Dashboard"],horizontal=True,label_visibility="collapsed")
@@ -85,7 +92,7 @@ if page=="Home":
         st.markdown('<span class="tag">ENERGY VISIBILITY</span> &nbsp; <span class="tag">EARLY SIGNALS</span> &nbsp; <span class="tag">ACTIONABLE INSIGHTS</span>',unsafe_allow_html=True)
         st.write("Built for teams that need to understand temperature stability, compressor behaviour and energy trends in one place.")
     with right:
-        if FACILITY.exists(): st.image(str(FACILITY),use_container_width=True,caption="AI-generated concept image · illustrative, not a customer installation")
+        if FACILITY: st.image(str(FACILITY),use_container_width=True,caption="AI-generated concept image · illustrative, not a customer installation")
         st.markdown('<div class="card"><h3>Designed for better decisions</h3><p>See temperature drift, unusual compressor power and energy trends in one workspace—then investigate with clearer context.</p></div>',unsafe_allow_html=True)
     section("Our team","The people behind FROSTWISE","A team working together on smarter, more efficient refrigeration insights.")
     team_cols=st.columns(4)
@@ -97,8 +104,8 @@ if page=="Home":
     product_cols=st.columns(5)
     for col,(title,filename) in zip(product_cols,PRODUCTS[:5]):
         with col:
-            img=ROOT/"assets"/filename
-            if img.exists(): st.image(str(img),use_container_width=True)
+            img=asset_file(filename)
+            if img: st.image(str(img),use_container_width=True)
             st.caption(title)
     if st.button("Explore all product applications",type="primary"):
         st.session_state["show_product_gallery"]=True
@@ -106,8 +113,8 @@ if page=="Home":
         product_cols=st.columns(5)
         for col,(title,filename) in zip(product_cols,PRODUCTS[5:]):
             with col:
-                img=ROOT/"assets"/filename
-                if img.exists(): st.image(str(img),use_container_width=True)
+                img=asset_file(filename)
+                if img: st.image(str(img),use_container_width=True)
                 st.caption(title)
     section("Platform overview","From operating data to next steps","A simple workflow for teams managing commercial cooling equipment.")
     cols=st.columns(3)
@@ -118,7 +125,7 @@ if page=="Home":
 
 elif page=="Our Solution":
     hero("Our solution","Refrigeration insights, made actionable.","Analyze commercial refrigeration readings, identify patterns worth checking and communicate suggested next steps.")
-    if FACILITY.exists(): st.image(str(FACILITY),use_container_width=True,caption="AI-generated illustrative refrigeration facility")
+    if FACILITY: st.image(str(FACILITY),use_container_width=True,caption="AI-generated illustrative refrigeration facility")
     section("How it works","A clear analysis workflow","Upload structured readings or explore the built-in demo dataset.")
     cols=st.columns(3)
     for col,(t,d) in zip(cols,[("1. Ingest data","Read timestamped room temperature, setpoint, ambient temperature and compressor power from CSV."),("2. Analyze patterns","Calculate energy estimates, temperature deviations and a data-derived power screening threshold."),("3. Explain signals","Show evidence and inspection prompts so an operator can decide what to check next.")]):
@@ -138,8 +145,8 @@ elif page=="Products & Applications":
         cols=st.columns(5)
         for col,(title,filename) in zip(cols,PRODUCTS[start:start+5]):
             with col:
-                img=ROOT/"assets"/filename
-                if img.exists(): st.image(str(img),use_container_width=True)
+                img=asset_file(filename)
+                if img: st.image(str(img),use_container_width=True)
                 st.markdown(f"<div class='card'><h3>{title}</h3><p>Illustrative application for refrigeration monitoring and energy visibility.</p></div>",unsafe_allow_html=True)
 
 elif page=="Our Team":
@@ -209,7 +216,7 @@ elif page=="Contact":
             st.text_area("Enquiry draft",st.session_state["contact_draft"],height=170)
             st.download_button("Download enquiry TXT",st.session_state["contact_draft"],"frostwise_enquiry.txt")
     with right:
-        if LOGO.exists(): st.image(str(LOGO),use_container_width=True)
+        if LOGO: st.image(str(LOGO),use_container_width=True)
         st.markdown('<div class="card"><h3>Pilot conversations</h3><p>We want to learn from supermarket operators, restaurant teams, refrigeration technicians and facility managers. A pilot requires permission to use site data, data-quality review and clear validation criteria.</p><p><b>Current status:</b> early prototype / demonstration software.</p></div>',unsafe_allow_html=True)
 
 elif page=="Live Dashboard":
