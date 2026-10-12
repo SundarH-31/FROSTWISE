@@ -7,6 +7,14 @@ from datetime import datetime
 ROOT=Path(__file__).parent
 LOGO=ROOT/"assets"/"frostwise_logo.png"
 FACILITY=ROOT/"assets"/"refrigeration_facility_ai_visual.png"
+PRODUCTS=[
+    ("Vegetable Cold Storage","vegetable_cold_storage.jpg"),("Meat Processing Cold Room","meat_processing_cold_room.jpg"),
+    ("Dairy Processing Unit","dairy_processing_unit.jpg"),("Seafood Cold Storage","seafood_cold_storage.jpg"),
+    ("Supermarket Display Chiller","supermarket_display_chiller.jpg"),("Pharma Cold Storage","pharma_cold_storage.jpg"),
+    ("Fruit Cold Storage","fruit_cold_storage.jpg"),("Refrigerated Transport","refrigerated_transport.jpg"),
+    ("Hotel & Restaurant Cooling","hotel_restaurant_cold_room.jpg"),("Industrial Chiller System","industrial_chiller_system.jpg")
+]
+TEAM=[("Sudhirsun S","Team Member"),("Zain Abbas A","Team Member"),("Sundar H","Team Member"),("Subramanian M","Team Member")]
 REQUIRED=["timestamp","room_temperature_c","setpoint_c","ambient_temperature_c","compressor_power_kw"]
 st.set_page_config(page_title="FROSTWISE | Smart Refrigeration",page_icon="❄️",layout="wide")
 st.markdown("""
@@ -61,7 +69,13 @@ with st.sidebar:
     st.caption("The contact form prepares a draft locally; it does not send email automatically.")
 
 st.markdown('<span class="tag">SMART REFRIGERATION INTELLIGENCE</span> &nbsp; <span style="color:#6a8291;font-size:.82rem">Prototype environment · v1.0</span>',unsafe_allow_html=True)
-page=st.radio("Website navigation",["Home","Our Solution","Who Benefits","Ask FROSTWISE","Contact","Live Dashboard"],horizontal=True,label_visibility="collapsed")
+# Brand header
+brand_left, brand_right = st.columns([1, 4])
+with brand_left:
+    if LOGO.exists(): st.image(str(LOGO), width=220)
+with brand_right:
+    st.markdown("<div style='padding-top:22px;text-align:right;color:#1597d4;font-weight:800;letter-spacing:.12em'>SMART REFRIGERATION SOLUTIONS</div>",unsafe_allow_html=True)
+page=st.radio("Website navigation",["Home","Our Solution","Products & Applications","Our Team","Who Benefits","Ask FROSTWISE","Contact","Live Dashboard"],horizontal=True,label_visibility="collapsed")
 st.divider()
 
 if page=="Home":
@@ -73,6 +87,28 @@ if page=="Home":
     with right:
         if FACILITY.exists(): st.image(str(FACILITY),use_container_width=True,caption="AI-generated concept image · illustrative, not a customer installation")
         st.markdown('<div class="card"><h3>Designed for better decisions</h3><p>See temperature drift, unusual compressor power and energy trends in one workspace—then investigate with clearer context.</p></div>',unsafe_allow_html=True)
+    section("Our team","The people behind FROSTWISE","A team working together on smarter, more efficient refrigeration insights.")
+    team_cols=st.columns(4)
+    for col,(member,role) in zip(team_cols,TEAM):
+        with col:
+            initials="".join(part[0] for part in member.split()[:2]).upper()
+            st.markdown(f"<div class='card' style='text-align:center'><div style='width:76px;height:76px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,#dff5ff,#d9f6e6);display:flex;align-items:center;justify-content:center;color:#075985;font-size:1.45rem;font-weight:800;border:3px solid white;box-shadow:0 0 0 1px #cde5f2'>{initials}</div><h3>{member}</h3><p>{role}</p></div>",unsafe_allow_html=True)
+    section("Products in customer environments","Refrigeration applications across industries","AI-generated illustrative concept images—not photographs of confirmed customer installations.")
+    product_cols=st.columns(5)
+    for col,(title,filename) in zip(product_cols,PRODUCTS[:5]):
+        with col:
+            img=ROOT/"assets"/filename
+            if img.exists(): st.image(str(img),use_container_width=True)
+            st.caption(title)
+    if st.button("Explore all product applications",type="primary"):
+        st.session_state["show_product_gallery"]=True
+    if st.session_state.get("show_product_gallery"):
+        product_cols=st.columns(5)
+        for col,(title,filename) in zip(product_cols,PRODUCTS[5:]):
+            with col:
+                img=ROOT/"assets"/filename
+                if img.exists(): st.image(str(img),use_container_width=True)
+                st.caption(title)
     section("Platform overview","From operating data to next steps","A simple workflow for teams managing commercial cooling equipment.")
     cols=st.columns(3)
     for col,(n,t,d) in zip(cols,[("01","Monitor","Bring temperature, setpoint, ambient conditions and compressor power into one view."),("02","Detect","Flag persistent temperature deviations and unusual power readings for investigation."),("03","Optimize","Explore energy trends and illustrative savings scenarios to prioritize follow-up.")]):
@@ -94,6 +130,28 @@ elif page=="Our Solution":
     with b:
         st.markdown('<div class="card"><h3>CSV data upload</h3><p>Analyze readings with required columns and export resulting data and signal logs.</p></div><div class="card"><h3>Power anomaly screening</h3><p>Flag unusual compressor power relative to the selected dataset. Signals are not confirmed diagnoses.</p></div>',unsafe_allow_html=True)
     st.warning("The current engine uses explicit rules and robust statistics, not a trained AI model. Alerts do not prove a fault or identify root cause.")
+
+elif page=="Products & Applications":
+    hero("Products & applications","Cooling solutions across customer environments.","Explore illustrative refrigeration environments where monitoring and energy insights may be useful.")
+    st.info("All gallery images are AI-generated concept visuals for demonstration. They do not represent verified customers, deployments or installed FROSTWISE products.")
+    for start in range(0,len(PRODUCTS),5):
+        cols=st.columns(5)
+        for col,(title,filename) in zip(cols,PRODUCTS[start:start+5]):
+            with col:
+                img=ROOT/"assets"/filename
+                if img.exists(): st.image(str(img),use_container_width=True)
+                st.markdown(f"<div class='card'><h3>{title}</h3><p>Illustrative application for refrigeration monitoring and energy visibility.</p></div>",unsafe_allow_html=True)
+
+elif page=="Our Team":
+    hero("Meet the team","The people behind FROSTWISE.","A collaborative team exploring smarter refrigeration, monitoring and energy insights.")
+    team_cols=st.columns(4)
+    team_details=[("Sudhirsun S","Team Member","Project coordination and solution planning"),("Zain Abbas A","Team Member","Research and data analysis"),("Sundar H","Team Member","Product development and AI integration"),("Subramanian M","Team Member","Testing and implementation")]
+    for col,(member,role,description) in zip(team_cols,team_details):
+        with col:
+            initials="".join(part[0] for part in member.split()[:2]).upper()
+            st.markdown(f"<div class='card' style='text-align:center'><div style='width:94px;height:94px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,#dff5ff,#d9f6e6);display:flex;align-items:center;justify-content:center;color:#075985;font-size:1.7rem;font-weight:800;border:3px solid white;box-shadow:0 0 0 1px #cde5f2'>{initials}</div><h3>{member}</h3><p><b>{role}</b><br>{description}</p></div>",unsafe_allow_html=True)
+    section("Our mission","Make refrigeration smarter and more sustainable","We are building a prototype that makes refrigeration operating data easier to review, discuss and improve.")
+    st.caption("Team roles are editable descriptions for the website. Please confirm each role with your team before presenting them as official.")
 
 elif page=="Who Benefits":
     hero("Who benefits","One cold chain. Many people to support.","Designed for teams that rely on stable temperatures, efficient cooling and dependable equipment.")
@@ -216,4 +274,4 @@ elif page=="Live Dashboard":
         report=f"FROSTWISE REFRIGERATION REPORT\nGenerated: {datetime.now().isoformat(timespec='minutes')}\nData source: {'Simulated demo data' if source=='Demo data' else 'User CSV'}\nValid readings: {len(df)}\nEstimated energy: {energy:.2f} kWh (one-hour interval assumption)\nEstimated cost: INR {cost:.2f}\nAverage compressor power: {avg:.2f} kW\nTemperature screening readings: {ta}\nUnusual compressor power readings: {pa}\nPower threshold: {threshold:.2f} kW\nScreening signals are not confirmed faults."
         st.download_button("Download summary report TXT",report,"frostwise_summary_report.txt")
 
-st.markdown('<div class="footer"><b>FROSTWISE</b> &nbsp; · &nbsp; Smart refrigeration intelligence &nbsp; · &nbsp; Prototype for demonstration<br/>Monitor · Analyze · Detect · Optimize</div>',unsafe_allow_html=True)
+st.markdown('<div class="footer"><b>FROSTWISE</b> &nbsp; · &nbsp; Smart refrigeration solutions<br/>Team: Sudhirsun S · Zain Abbas A · Sundar H · Subramanian M<br/>Monitor · Analyze · Detect · Optimize<br/><small>AI-generated application images are illustrative concepts; no customer deployment is implied.</small></div>',unsafe_allow_html=True)
