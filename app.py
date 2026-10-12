@@ -23,7 +23,7 @@ PRODUCTS=[
 ]
 TEAM=[("Sudhirsun S","Team Member"),("Zain Abbas A","Team Member"),("Sundar H","Team Member"),("Subramanian M","Team Member")]
 REQUIRED=["timestamp","room_temperature_c","setpoint_c","ambient_temperature_c","compressor_power_kw"]
-st.set_page_config(page_title="FROSTWISE | Smart Refrigeration",page_icon="❄️",layout="wide")
+st.set_page_config(page_title="FROSTWISE ",page_icon="❄️",layout="wide")
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
